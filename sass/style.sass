@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa')
+
+body
+  text-align: center
+  background-color: #399bb6
+  font-family: 'Comfortaa'
+  
+h1
+  font-size: 10vh
+  
+.box
+  display: grid
+  grid-template-columns: repeat(2, 1fr)
+  grid-template-rows: repeat(2, 1fr)
+  align-items: center
+
+#break-box, #session-box
+  font-size: 4vh
+  width: 35vh
+
+#break-box
+  justify-self: right
+  margin-right: 3vh
+
+#session-box
+  justify-self: left
+  margin-left: 3vh
+  
+#display-box
+  grid-column: 1 / 3
+  justify-self: center
+  width: 40vh
+  font-size: 5vh
+
+#timer-label
+  border: 5px solid black
+  
+button
+  background-color: white
+  border-radius: 50px
+  font-size: 3vh
+  margin: 1vh
+
+button:hover
+  background-color: black
+  color: white
+  cursor: pointer
+
+footer
+  text-align: right

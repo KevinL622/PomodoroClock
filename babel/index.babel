@@ -1,0 +1,225 @@
+class TimerSet extends React.Component {
+  render() {
+    return (
+      <div className="container" id={this.props.timerSetId}>
+        <div id={this.props.buttonLabel}>
+          {this.props.textLabel}
+          <p id={this.props.idLength}>{this.props.setLength}</p>
+          <button id={this.props.incrementType} onClick={this.props.incrementClick}>+1 Minute</button>
+          <button id={this.props.decrementType} onClick={this.props.decrementClick}>-1 Minute</button>
+        </div>
+      </div>
+    )
+  }
+};
+
+class DisplaySession extends React.Component {
+  render() {
+    return(
+      <div className="container" id={this.props.displayId}>
+          <div id={this.props.label}>
+            {this.props.textLabel}
+            <p id={this.props.timeLabel}>{this.props.timeLeft}</p>
+            <audio id={this.props.audioId} preload="auto" src="https://sampleswap.org/samples-ghost/SFX%20and%20UNUSUAL%20SOUNDS/alarm%20sounds/49[kb]squeaky-clown-horn.wav.mp3" ref={(audio) => {this.alarmSound = audio;}}></audio>
+            <button id={this.props.playButtonId} onClick={this.props.playClick}>{this.props.playLabel}</button>
+            <button id={this.props.resetButtonId} onClick={this.props.resetClick}>{this.props.resetLabel}</button>
+          </div>
+        </div>
+    )
+  }
+};
+
+const minuteConverter = function(timeInMinutes) {
+  var totalTime = (timeInMinutes * 60);
+  var minutes = timeInMinutes;
+  var seconds = Math.floor(totalTime % 60);
+  minutes < 10 ? minutes = "0" + minutes : minutes= minutes;
+  seconds < 10 ? seconds = "0" + seconds : seconds= seconds;
+  var timeString = minutes + ":" + seconds;
+  return timeString;
+}
+
+const secondsConverter = function(timeInSeconds) {
+   var totalTime = timeInSeconds;
+   var minutes = Math.floor(totalTime / 60);
+   var seconds = Math.floor(totalTime % 60);
+   minutes < 10 ? minutes = "0" + minutes : minutes= minutes;
+   seconds < 10 ? seconds = "0" + seconds : seconds= seconds;
+   var timeString = minutes + ":" + seconds;
+   return timeString;
+}
+
+class Timer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      breakLength: 5,
+      sessionLength: 25,
+      sessionTime: 1500,
+      timeType: "Session",
+      power: "off"
+    }
+    this.countDown = this.countDown.bind(this);
+    this.reset = this.reset.bind(this);
+    this.timeDecrement = this.timeDecrement.bind(this);
+    this.stopCount = this.stopCount.bind(this);
+    this.breakIncrement = this.breakIncrement.bind(this);
+    this.sessionIncrement = this.sessionIncrement.bind(this);
+    this.breakDecrement = this.breakDecrement.bind(this);
+    this.sessionDecrement = this.sessionDecrement.bind(this);
+    this.alarm = this.alarm.bind(this);
+    this.timeSwitch = this.timeSwitch.bind(this);
+  }
+  
+  timeDecrement() {
+    this.setState({
+      sessionTime: this.state.sessionTime - 1
+    });
+  }
+  
+  breakIncrement() {
+    if (this.state.power == "off" && this.state.breakLength < 60) {
+      this.setState({
+        breakLength: this.state.breakLength + 1
+      });
+    }
+  }
+  
+  sessionIncrement() {
+    if (this.state.sessionLength < 60 && this.state.power == "off") {
+      this.setState({
+        sessionLength: this.state.sessionLength + 1,
+        sessionTime: this.state.sessionTime + 60
+      });
+    }
+  }
+  
+  breakDecrement() {
+    if (this.state.power == "off" && this.state.breakLength > 1) {
+      this.setState({
+        breakLength: this.state.breakLength - 1
+      });
+    }
+  }
+  
+  sessionDecrement() {
+    if (this.state.sessionLength > 1 && this.state.power == "off") {
+      this.setState({
+        sessionLength: this.state.sessionLength - 1,
+        sessionTime: this.state.sessionTime - 60
+      });
+    }
+  }
+  
+  stopCount(variableName){
+    if (variableName) {
+      clearInterval(variableName);
+    }
+  }
+  
+  countDown(event){
+    var counter;
+    if (this.state.power == "on") {
+      this.stopCount(this.counter);
+      this.setState({
+        power: "off"
+      });
+    } else {
+        this.counter = setInterval(() => {
+          this.timeDecrement();
+          this.timeSwitch();
+        }, 1000);
+        this.setState({
+          power: "on"
+        });
+      }
+  }
+  
+  reset(event) {
+    this.stopCount(this.counter);
+    this.setState({
+      breakLength: 5,
+      sessionLength: 25,
+      sessionTime: 1500,
+      timeType: "Session",
+      power: "off"
+    });
+    document.getElementById("beep").pause();
+    document.getElementById("beep").currentTime = 0;
+  }
+  
+  alarm() {
+    document.getElementById("beep").play();
+  }
+  
+  timeSwitch() {
+    if (this.state.sessionTime < 0 && this.state.timeType == "Session") {
+      this.alarm();
+      this.stopCount(this.counter);
+      this.setState({
+        sessionTime: this.state.breakLength * 60,
+        timeType: "Break",
+        power: "off"
+      });
+      this.countDown();
+    } else if (this.state.sessionTime < 0 && this.state.timeType == "Break") {
+        this.alarm();
+        this.stopCount(this.counter);
+        this.setState({
+          sessionTime: this.state.sessionLength * 60,
+          timeType: "Session",
+          power: "off"
+        });
+        this.countDown();
+      }
+  }
+  
+  render() {
+    return(
+      <div>
+      <h1>Pomodoro Clock</h1>
+      <div className="box">
+        
+        <TimerSet 
+          timerSetId="break-box"
+          buttonLabel="break-label"
+          textLabel="Break Length"
+          idLength="break-length"
+          setLength={this.state.breakLength}
+          incrementType="break-increment"
+          incrementClick={this.breakIncrement}
+          decrementType="break-decrement"
+          decrementClick={this.breakDecrement} />
+        
+        <TimerSet 
+          timerSetId="session-box"
+          buttonLabel="session-label"
+          textLabel="Session Length"
+          idLength="session-length"
+          setLength={this.state.sessionLength}
+          incrementType="session-increment"
+          incrementClick={this.sessionIncrement}
+          decrementType="session-decrement"
+          decrementClick={this.sessionDecrement} />
+        
+        <DisplaySession 
+          displayId="display-box"
+          label="timer-label"
+          textLabel={this.state.timeType}
+          timeLabel="time-left"
+          timeLeft={secondsConverter(this.state.sessionTime)}
+          audioId="beep"
+          playButtonId="start_stop"
+          playClick={this.countDown}
+          playLabel="Play/Pause"
+          resetButtonId="reset"
+          resetClick={this.reset}
+          resetLabel="Reset" />      
+      </div>
+        
+    </div>
+    )
+  }
+};
+
+ReactDOM.render(<Timer />, document.getElementById('app'));
