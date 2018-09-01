@@ -70,13 +70,13 @@ class Timer extends React.Component {
     this.alarm = this.alarm.bind(this);
     this.timeSwitch = this.timeSwitch.bind(this);
   }
-  
+
   timeDecrement() {
     this.setState({
       sessionTime: this.state.sessionTime - 1
     });
   }
-  
+
   breakIncrement() {
     if (this.state.power == "off" && this.state.breakLength < 60) {
       this.setState({
@@ -84,7 +84,7 @@ class Timer extends React.Component {
       });
     }
   }
-  
+
   sessionIncrement() {
     if (this.state.sessionLength < 60 && this.state.power == "off") {
       this.setState({
@@ -93,7 +93,7 @@ class Timer extends React.Component {
       });
     }
   }
-  
+
   breakDecrement() {
     if (this.state.power == "off" && this.state.breakLength > 1) {
       this.setState({
@@ -101,7 +101,7 @@ class Timer extends React.Component {
       });
     }
   }
-  
+
   sessionDecrement() {
     if (this.state.sessionLength > 1 && this.state.power == "off") {
       this.setState({
@@ -110,13 +110,13 @@ class Timer extends React.Component {
       });
     }
   }
-  
+
   stopCount(variableName){
     if (variableName) {
       clearInterval(variableName);
     }
   }
-  
+
   countDown(event){
     var counter;
     if (this.state.power == "on") {
@@ -134,7 +134,7 @@ class Timer extends React.Component {
         });
       }
   }
-  
+
   reset(event) {
     this.stopCount(this.counter);
     this.setState({
@@ -147,11 +147,11 @@ class Timer extends React.Component {
     document.getElementById("beep").pause();
     document.getElementById("beep").currentTime = 0;
   }
-  
+
   alarm() {
     document.getElementById("beep").play();
   }
-  
+
   timeSwitch() {
     if (this.state.sessionTime < 0 && this.state.timeType == "Session") {
       this.alarm();
@@ -173,14 +173,14 @@ class Timer extends React.Component {
         this.countDown();
       }
   }
-  
+
   render() {
     return(
       <div>
       <h1>Pomodoro Clock</h1>
       <div className="box">
-        
-        <TimerSet 
+
+        <TimerSet
           timerSetId="break-box"
           buttonLabel="break-label"
           textLabel="Break Length"
@@ -190,8 +190,8 @@ class Timer extends React.Component {
           incrementClick={this.breakIncrement}
           decrementType="break-decrement"
           decrementClick={this.breakDecrement} />
-        
-        <TimerSet 
+
+        <TimerSet
           timerSetId="session-box"
           buttonLabel="session-label"
           textLabel="Session Length"
@@ -201,8 +201,8 @@ class Timer extends React.Component {
           incrementClick={this.sessionIncrement}
           decrementType="session-decrement"
           decrementClick={this.sessionDecrement} />
-        
-        <DisplaySession 
+
+        <DisplaySession
           displayId="display-box"
           label="timer-label"
           textLabel={this.state.timeType}
@@ -214,9 +214,9 @@ class Timer extends React.Component {
           playLabel="Play/Pause"
           resetButtonId="reset"
           resetClick={this.reset}
-          resetLabel="Reset" />      
+          resetLabel="Reset" />
       </div>
-        
+
     </div>
     )
   }

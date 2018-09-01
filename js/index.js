@@ -5,8 +5,8 @@ var _createClass = function () {function defineProperties(target, props) {for (v
           React.createElement("div", { id: this.props.buttonLabel },
             this.props.textLabel,
             React.createElement("p", { id: this.props.idLength }, this.props.setLength),
-            React.createElement("button", { id: this.props.incrementType, onClick: this.props.incrementClick }, "+1 Minute"),
-            React.createElement("button", { id: this.props.decrementType, onClick: this.props.decrementClick }, "-1 Minute"))));
+            React.createElement("button", { id: this.props.incrementType, onClick: this.props.incrementClick }, "+1 Min"),
+            React.createElement("button", { id: this.props.decrementType, onClick: this.props.decrementClick }, "-1 Min"))));
 
 
 
